@@ -1,4 +1,4 @@
-import DAL.{DataSrcType, BaseAnalyser}
+import DAL.{DataSrcType, BaseAnalyzer}
 import RedBlackTree.RBTree
 import RedBlackTree.RBTree
 
@@ -12,21 +12,40 @@ object Main extends App {
                     "database.ssl" -> "true",
                     "database.sslfactory" -> "org.postgresql.ssl.NonValidatingFactory")
 
-  val mySqlMap = Map("database.url" -> "")
+  val mySqlMap = Map("database.url" -> "jdbc:mysql://localhost/",
+                      "database.name" -> "test",
+                      "database.username" -> "root",
+                      "database.password" -> "")
 
-  val pgSqlAnalyser =  BaseAnalyser(DataSrcType.dstPostgresql, pgSqlMap)
-  val entities = pgSqlAnalyser.getEntities()
-  for(e <- entities){
+  println("Postgresql...")
+  val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
+//  val pgEntities = pgSqlAnalyzer.getEntities()
+//  for(e <- pgEntities){
+//    println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
+//  }
+//
+//  println("\n")
+//  var pgEntityItems = pgSqlAnalyzer.getEntityItems("user")
+//  for(e <- pgEntityItems){
+//    println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
+//  }
+
+  println("\n")
+  println("\n")
+  println("\n")
+  println("\n")
+  println("\n")
+  println("mySQL...")
+  val mySqlAnalyzer =  BaseAnalyzer(DataSrcType.dstMySQL, mySqlMap)
+  val mySqlEntities = mySqlAnalyzer.getEntities()
+  for(e <- mySqlEntities){
     println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
   }
 
   println("\n")
-  var entityItems = pgSqlAnalyser.getEntityItems("user")
-  for(e <- entityItems){
+  var mySqlentityItems = mySqlAnalyzer.getEntityItems("vwpersons")
+  for(e <- mySqlentityItems){
     println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
   }
-
-  val mySqlAnalyser =  BaseAnalyser(DataSrcType.dstMySQL, mySqlMap)
-  println("\n")
 
 }

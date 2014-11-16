@@ -3,25 +3,20 @@ package DAL
 import java.util.Properties
 import Models.{DataEntityItem, DataEntity}
 
-import scala.collection.mutable.ListBuffer
-
 //import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.driver.JdbcDriver.backend.Database
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import Database.dynamicSession
 
-trait Profile {
+trait PostgresqlProfile {
   val profile = scala.slick.driver.PostgresDriver
 }
 
 /**
  * Created by nikolatonkev on 14-11-15.
  */
-class PostgreSqlAnalyser(connStrSettings: Map[String, String]) extends BaseAnalyser(DataSrcType.dstPostgresql, connStrSettings) {
-
-  implicit val getDataEntityResult = GetResult( r => DataEntity(r.nextString, r.nextString, r.nextString))
-  implicit val getDataEntityItemResult = GetResult( r => DataEntityItem(r.nextString, r.nextInt, r.nextString, r.nextBoolean, r.nextString, r.nextInt, r.nextInt, r.nextInt))
+class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstPostgresql, connStrSettings) {
 
   implicit def GetDataBase(): Database = {
     val url = connStrSettings("database.url")
