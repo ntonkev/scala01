@@ -1,4 +1,4 @@
-import DAL.{DataSrcType, BaseAnalyzer}
+import DAL.{PostgreSqlAnalyzer, DataSrcType, BaseAnalyzer}
 import RedBlackTree.RBTree
 import RedBlackTree.RBTree
 
@@ -19,16 +19,22 @@ object Main extends App {
 
   println("Postgresql...")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
-//  val pgEntities = pgSqlAnalyzer.getEntities()
-//  for(e <- pgEntities){
-//    println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
-//  }
-//
-//  println("\n")
-//  var pgEntityItems = pgSqlAnalyzer.getEntityItems("user")
-//  for(e <- pgEntityItems){
-//    println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
-//  }
+  val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQry()
+  for(m <- models){
+    println(m)
+  }
+
+  /*
+  val pgEntities = pgSqlAnalyzer.getEntities()
+  for(e <- pgEntities){
+    println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
+  }
+
+  println("\n")
+  var pgEntityItems = pgSqlAnalyzer.getEntityItems("user")
+  for(e <- pgEntityItems){
+    println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
+  }
 
   println("\n")
   println("\n")
@@ -47,5 +53,6 @@ object Main extends App {
   for(e <- mySqlentityItems){
     println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
   }
+  */
 
 }

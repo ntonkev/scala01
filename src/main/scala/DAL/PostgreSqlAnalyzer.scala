@@ -3,6 +3,8 @@ package DAL
 import java.util.Properties
 import Models.{DataEntityItem, DataEntity}
 
+import scala.slick.collection.heterogenous.Zero.+
+
 //import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.driver.JdbcDriver.backend.Database
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
@@ -17,6 +19,9 @@ trait PostgresqlProfile {
  * Created by nikolatonkev on 14-11-15.
  */
 class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstPostgresql, connStrSettings) {
+
+  implicit val getAnyResult = GetResult( r => AnyRef)
+
 
   implicit def GetDataBase(): Database = {
     val url = connStrSettings("database.url")
@@ -51,4 +56,13 @@ class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnaly
       Q.queryNA[DataEntityItem]("SELECT column_name AS ColumnName, ordinal_position AS OrderIndex, column_default AS DefaultValue, (CASE is_nullable WHEN 'YES' THEN true ELSE false END) AS Nullable, data_type AS ColumnType, character_maximum_length AS ColumnLenght, numeric_precision AS ColumnPrecision, numeric_scale AS ColumnScale FROM information_schema.columns WHERE table_name   = '" + entity + "'").list
     }
   }
+
+  def runQry(): Seq[AnyRef] ={
+    val db = GetDataBase()
+    db.withDynSession {
+      //    def allData() = sql"SELECT family_name, given_name, gender FROM auth.userinfo".as[Object]
+      Q.queryNA[AnyRef]("""SELECT family_name, given_name, gender FROM auth.userinfo""").list
+    }
+  }
+
 }
