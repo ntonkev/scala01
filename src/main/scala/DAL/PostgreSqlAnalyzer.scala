@@ -1,15 +1,19 @@
 package DAL
 
+import org.joda.time.DateTime
+import java.sql.PreparedStatement
 import java.util.Properties
 import Models.{DataEntityItem, DataEntity}
 
 import scala.slick.collection.heterogenous.Zero.+
+import scala.slick.lifted.Query
 
 //import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.driver.JdbcDriver.backend.Database
-import scala.slick.jdbc.{GetResult, StaticQuery => Q}
+import scala.slick.jdbc.{StaticQuery => Q, PositionedResult, GetResult}
 import Q.interpolation
 import Database.dynamicSession
+
 
 trait PostgresqlProfile {
   val profile = scala.slick.driver.PostgresDriver
@@ -20,7 +24,11 @@ trait PostgresqlProfile {
  */
 class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstPostgresql, connStrSettings) {
 
-  implicit val getAnyResult = GetResult( r => AnyRef)
+  implicit val getAnyRefResult = GetResult[Map[String,Any]] ( prs =>
+    (1 to prs.numColumns).map(_ =>
+      prs.rs.getMetaData.getColumnName(prs.currentPos+1) -> prs.nextString
+    ).toMap
+  )
 
 
   implicit def GetDataBase(): Database = {
@@ -57,7 +65,7 @@ class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnaly
     }
   }
 
-  def runQry(): Seq[AnyRef] ={
+  def runQry(): Seq[Object] ={
     val db = GetDataBase()
     db.withDynSession {
       //    def allData() = sql"SELECT family_name, given_name, gender FROM auth.userinfo".as[Object]
