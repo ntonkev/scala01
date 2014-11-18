@@ -4,6 +4,11 @@ import RedBlackTree.RBTree
 
 object Main extends App {
 
+  import scala.reflect._
+  val ct = classTag[String]
+  println(ct)
+
+
   //val rbTree: RBTree[Comparable[Int], Int]  = new RBTree[Comparable[Int],Int]()
 
   val pgSqlMap = Map("database.url" -> "jdbc:postgresql://ec2-54-221-223-92.compute-1.amazonaws.com:5432/db7k8198l73h6l",
@@ -19,7 +24,7 @@ object Main extends App {
 
   println("Postgresql...")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
-  val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQry()
+  val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQryWithParams()
   for(m <- models){
     println(m)
   }

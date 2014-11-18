@@ -65,12 +65,23 @@ class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnaly
     }
   }
 
-  def runQry(): Seq[Object] ={
+  def runQryWithoutParams(): Seq[Object] ={
     val db = GetDataBase()
     db.withDynSession {
       //    def allData() = sql"SELECT family_name, given_name, gender FROM auth.userinfo".as[Object]
       Q.queryNA[AnyRef]("""SELECT family_name, given_name, gender FROM auth.userinfo""").list
     }
   }
+
+  def runQryWithParams(): Seq[Object] = {
+    val db = GetDataBase()
+    db.withDynSession {
+      val result = Q.query[(String, String), AnyRef]("""SELECT family_name, given_name, gender FROM auth.userinfo WHERE given_name = ? OR family_name = ?""")
+      result("desy", "Moroz").list
+
+    }
+  }
+
+
 
 }
