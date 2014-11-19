@@ -1,6 +1,6 @@
 import java.math.BigInteger
 
-import DAL.{PostgreSqlAnalyzer, DataSrcType, BaseAnalyzer}
+import DAL.{MySqlAnalyzer, PostgreSqlAnalyzer, DataSrcType, BaseAnalyzer}
 import RedBlackTree.RBTree
 import RedBlackTree.RBTree
 
@@ -41,6 +41,18 @@ object Main extends App {
 
   println("Postgresql...")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
+  val pgEntities = pgSqlAnalyzer.getEntities()
+  for(e <- pgEntities){
+    println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
+  }
+
+  println("\n")
+  var pgentityItems = pgSqlAnalyzer.getEntityItems("entity")
+  for(e <- pgentityItems){
+    println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
+  }
+
+  println("\n")
   val params = List("desy", "Moroz")
   val strOne: String = """SELECT * /* family_name, given_name, gender */ FROM auth.userinfo WHERE given_name = ? OR family_name = ?"""
   val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].executeQuery(params, strOne)
@@ -52,25 +64,17 @@ object Main extends App {
     println(m)
   }
 
-  /*
-  val pgEntities = pgSqlAnalyzer.getEntities()
-  for(e <- pgEntities){
-    println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
-  }
-
-  println("\n")
-  var pgEntityItems = pgSqlAnalyzer.getEntityItems("user")
-  for(e <- pgEntityItems){
-    println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
-  }
-
-  println("\n")
-  println("\n")
-  println("\n")
   println("\n")
   println("\n")
   println("mySQL...")
   val mySqlAnalyzer =  BaseAnalyzer(DataSrcType.dstMySQL, mySqlMap)
+  var sqlThree: String = """SELECT (CASE table_type WHEN 'BASE TABLE' THEN 'Table' ELSE 'View' END) AS 'Type', '' AS 'Schema', table_name AS 'Name' FROM information_schema.tables WHERE (table_type = 'base table' OR table_type = 'view')AND table_schema= ? """
+  val params3 = List("test")
+  for(m <- mySqlAnalyzer.asInstanceOf[MySqlAnalyzer].executeQuery(params3, sqlThree)){
+    println(m)
+  }
+
+
   val mySqlEntities = mySqlAnalyzer.getEntities()
   for(e <- mySqlEntities){
     println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
@@ -81,6 +85,6 @@ object Main extends App {
   for(e <- mySqlentityItems){
     println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
   }
-  */
+
 
 }
