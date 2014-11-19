@@ -67,15 +67,6 @@ class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnaly
     }
   }
 
-  def runQryWithoutParams(): Seq[Object] ={
-    val db = GetDataBase()
-    db.withDynSession {
-      //    def allData() = sql"SELECT family_name, given_name, gender FROM auth.userinfo".as[Object]
-      Q.queryNA[AnyRef]("""SELECT family_name, given_name, gender FROM auth.userinfo""").list
-    }
-  }
-
-
 //  def seqParam[A](implicit pconv: SetParameter[A]): SetParameter[Seq[A]] = SetParameter {
 //    case (seq, pp) =>
 //      for (a <- seq) {
@@ -92,13 +83,28 @@ class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnaly
 //  }
 //
 
-
-  def runQryWithParams(params: List[Any]): Seq[Object] = {
+  protected def runQryWithoutParams(sqlStr: String): Seq[Object] ={
     val db = GetDataBase()
     db.withDynSession {
-      val result = Q.query[List[Any] , AnyRef]("""SELECT * /* family_name, given_name, gender */ FROM auth.userinfo WHERE given_name = ? OR family_name = ? """)
+      //    def allData() = sql"SELECT family_name, given_name, gender FROM auth.userinfo".as[Object]
+      Q.queryNA[AnyRef](sqlStr).list
+    }
+  }
+
+  //"""SELECT * /* family_name, given_name, gender */ FROM auth.userinfo WHERE given_name = ? OR family_name = ? """
+  protected def runQryWithParams(params: List[Any], sqlStr: String): Seq[Object] = {
+    val db = GetDataBase()
+    db.withDynSession {
+      val result = Q.query[List[Any] , AnyRef](sqlStr)
       result(params).list
       //return null
+    }
+  }
+
+  def executeQuery(params: List[Any], sqlStr: String): Seq[Object] = {
+    return params match{
+      case null => runQryWithoutParams(sqlStr)
+      case _ => runQryWithParams(params, sqlStr)
     }
   }
 

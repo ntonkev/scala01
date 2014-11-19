@@ -8,9 +8,9 @@ import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
 import Database.dynamicSession
 
-trait MySqlProfile {
-  val profile = scala.slick.driver.MySQLDriver
-}
+//trait MySqlProfile {
+//  val profile = scala.slick.driver.MySQLDriver
+//}
 
 /**
  * Created by nikolatonkev on 14-11-15.

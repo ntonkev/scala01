@@ -42,13 +42,15 @@ object Main extends App {
   println("Postgresql...")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
   val params = List("desy", "Moroz")
-  val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQryWithParams(params)
+  val strOne: String = """SELECT * /* family_name, given_name, gender */ FROM auth.userinfo WHERE given_name = ? OR family_name = ?"""
+  val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].executeQuery(params, strOne)
   for(m <- models){
     println(m)
   }
-  /*for(m <- pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQryWithoutParams()){
+  val strTwo: String = """SELECT family_name, given_name, gender FROM auth.userinfo"""
+  for(m <- pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].executeQuery(null, strTwo)){
     println(m)
-  }*/
+  }
 
   /*
   val pgEntities = pgSqlAnalyzer.getEntities()
