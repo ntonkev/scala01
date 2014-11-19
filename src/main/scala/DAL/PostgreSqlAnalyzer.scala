@@ -1,5 +1,7 @@
 package DAL
 
+import java.math.BigInteger
+
 import org.joda.time.DateTime
 import java.sql.PreparedStatement
 import java.util.Properties
@@ -89,22 +91,12 @@ class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnaly
 //    case _         => "Unknown"
 //  }
 //
-implicit object SetListAny extends SetParameter[List[Any]] {
-  def apply(vList: List[Any], pp: PositionedParameters) {
-    for (v <- vList)
-      v match {
-        case v:Int => pp.setInt(v.asInstanceOf[Int])
-        case v:String => pp.setString(v.asInstanceOf[String])
-      }
 
-
-  }
-}
 
   def runQryWithParams(params: List[Any]): Seq[Object] = {
     val db = GetDataBase()
     db.withDynSession {
-      val result = Q.query[List[Any] , AnyRef]("""SELECT family_name, given_name, gender FROM auth.userinfo WHERE given_name = ? OR family_name = ?""")
+      val result = Q.query[List[Any] , AnyRef]("""SELECT * /* family_name, given_name, gender */ FROM auth.userinfo WHERE given_name = ? OR family_name = ? """)
       result(params).list
       //return null
     }

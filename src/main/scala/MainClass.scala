@@ -1,3 +1,5 @@
+import java.math.BigInteger
+
 import DAL.{PostgreSqlAnalyzer, DataSrcType, BaseAnalyzer}
 import RedBlackTree.RBTree
 import RedBlackTree.RBTree
@@ -38,12 +40,15 @@ object Main extends App {
                       "database.password" -> "")
 
   println("Postgresql...")
-  val params = List("desy", "Moroz")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
+  val params = List("desy", "Moroz")
   val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQryWithParams(params)
   for(m <- models){
     println(m)
   }
+  /*for(m <- pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQryWithoutParams()){
+    println(m)
+  }*/
 
   /*
   val pgEntities = pgSqlAnalyzer.getEntities()
