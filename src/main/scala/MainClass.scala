@@ -6,28 +6,7 @@ import RedBlackTree.RBTree
 
 object Main extends App {
 
-
-
-//  import scala.reflect._
-//  val ct = classTag[String]
-//  println(ct)
-
-//  val x: String = "5"
-//  import scala.reflect.ClassTag
-//  def f[T](v: T)(implicit ev: ClassTag[T]) = ev
-//  //println(f(0.5)) // returns the string "Any"
-
-//  val vList: List[Any] = List(5, "Moroz")
-//  for (v <- vList){
-//    println(v.getClass())
-//    v match {
-//      case v:Int => println("Int")
-//      case v:String => println("string")
-//    }
-//  }
-
   //val rbTree: RBTree[Comparable[Int], Int]  = new RBTree[Comparable[Int],Int]()
-
   val pgSqlMap = Map("database.url" -> "jdbc:postgresql://ec2-54-221-223-92.compute-1.amazonaws.com:5432/db7k8198l73h6l",
                     "database.username" -> "aypkpqlvwdznkk",
                     "database.password" -> "blItMMzvKwWjEFI1ItcWhc-uix",
@@ -39,6 +18,11 @@ object Main extends App {
                       "database.username" -> "root",
                       "database.password" -> "")
 
+  val flatFileMap = Map("flatfile.url" -> "C:\\Users\\ntonkev\\IdeaProjects\\scala01\\Data\\Seeds\\inv-details.csv",
+                        "flatfile.name" -> "inv-details.csv",
+                        //"flatfile.has.header" -> "true",
+                        "flatfile.delimiter" -> ",")
+  /*
   println("Postgresql...")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
   val pgEntities = pgSqlAnalyzer.getEntities()
@@ -85,6 +69,12 @@ object Main extends App {
   for(e <- mySqlentityItems){
     println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
   }
+  */
 
-
+  println("Flat file...")
+  val ffAnalyser = BaseAnalyzer(DataSrcType.dstFlatFile, flatFileMap)
+  val ffEntity = ffAnalyser.getEntityItems()
+  for(e <- ffEntity){
+    println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
+  }
 }

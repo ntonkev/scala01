@@ -19,7 +19,7 @@ import DataSrcType._
 abstract class BaseAnalyzer(dataSrcType: DataSrcType, val connStrSettings: Map[String, String]) extends ImplicitSetListAny with ImplicitAnyRefResult {
 
   def getEntities(): Seq[DataEntity]
-  def getEntityItems(entity: String): Seq[DataEntityItem]
+  def getEntityItems(entity: String = ""): Seq[DataEntityItem]
 
   protected def GetDataBase(): Database = {
     return dataSrcType match {
@@ -56,18 +56,21 @@ abstract class BaseAnalyzer(dataSrcType: DataSrcType, val connStrSettings: Map[S
 
 
 object BaseAnalyzer {
+  def createFlatFileAnalyzer(connStrSettings: Map[String, String]): FlatFileAnalyzer = {
+    return new FlatFileAnalyzer(connStrSettings)
+  }
+
   def createPostgreSqlAnalyzer(connStrSettings: Map[String, String]): PostgreSqlAnalyzer = {
     return new PostgreSqlAnalyzer(connStrSettings)
-
   }
 
   def createMySqlAnalyzer(connStrSettings: Map[String, String]): MySqlAnalyzer = {
     return new MySqlAnalyzer(connStrSettings)
-
   }
 
   def apply(dataSrcType: DataSrcType, connStrSettings: Map[String, String]) = dataSrcType match {
     case DataSrcType.dstPostgresql => createPostgreSqlAnalyzer(connStrSettings)
     case DataSrcType.dstMySQL => createMySqlAnalyzer(connStrSettings)
+    case DataSrcType.dstFlatFile => createFlatFileAnalyzer(connStrSettings)
   }
 }
