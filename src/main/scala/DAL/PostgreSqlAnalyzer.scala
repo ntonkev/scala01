@@ -10,7 +10,7 @@ import scala.slick.lifted.Query
 
 //import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.driver.JdbcDriver.backend.Database
-import scala.slick.jdbc.{StaticQuery => Q, PositionedResult, GetResult}
+import scala.slick.jdbc.{StaticQuery => Q, PositionedParameters, SetParameter, PositionedResult, GetResult}
 import Q.interpolation
 import Database.dynamicSession
 
@@ -73,12 +73,40 @@ class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnaly
     }
   }
 
-  def runQryWithParams(): Seq[Object] = {
+
+//  def seqParam[A](implicit pconv: SetParameter[A]): SetParameter[Seq[A]] = SetParameter {
+//    case (seq, pp) =>
+//      for (a <- seq) {
+//        pconv.apply(a, pp)
+//      }
+//  }
+//
+//  implicit def setLongList = seqParam[String]
+
+//  def f[T](v: T) = v match {
+//    case _: Int    => Int
+//    case _: String => String
+//    case _         => "Unknown"
+//  }
+//
+implicit object SetListAny extends SetParameter[List[Any]] {
+  def apply(vList: List[Any], pp: PositionedParameters) {
+    for (v <- vList)
+      v match {
+        case v:Int => pp.setInt(v.asInstanceOf[Int])
+        case v:String => pp.setString(v.asInstanceOf[String])
+      }
+
+
+  }
+}
+
+  def runQryWithParams(params: List[Any]): Seq[Object] = {
     val db = GetDataBase()
     db.withDynSession {
-      val result = Q.query[(String, String), AnyRef]("""SELECT family_name, given_name, gender FROM auth.userinfo WHERE given_name = ? OR family_name = ?""")
-      result("desy", "Moroz").list
-
+      val result = Q.query[List[Any] , AnyRef]("""SELECT family_name, given_name, gender FROM auth.userinfo WHERE given_name = ? OR family_name = ?""")
+      result(params).list
+      //return null
     }
   }
 

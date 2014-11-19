@@ -4,10 +4,25 @@ import RedBlackTree.RBTree
 
 object Main extends App {
 
-  import scala.reflect._
-  val ct = classTag[String]
-  println(ct)
 
+
+//  import scala.reflect._
+//  val ct = classTag[String]
+//  println(ct)
+
+//  val x: String = "5"
+//  import scala.reflect.ClassTag
+//  def f[T](v: T)(implicit ev: ClassTag[T]) = ev
+//  //println(f(0.5)) // returns the string "Any"
+
+//  val vList: List[Any] = List(5, "Moroz")
+//  for (v <- vList){
+//    println(v.getClass())
+//    v match {
+//      case v:Int => println("Int")
+//      case v:String => println("string")
+//    }
+//  }
 
   //val rbTree: RBTree[Comparable[Int], Int]  = new RBTree[Comparable[Int],Int]()
 
@@ -23,8 +38,9 @@ object Main extends App {
                       "database.password" -> "")
 
   println("Postgresql...")
+  val params = List("desy", "Moroz")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
-  val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQryWithParams()
+  val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].runQryWithParams(params)
   for(m <- models){
     println(m)
   }
