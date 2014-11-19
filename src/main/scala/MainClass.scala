@@ -55,12 +55,12 @@ object Main extends App {
   println("\n")
   val params = List("desy", "Moroz")
   val strOne: String = """SELECT * /* family_name, given_name, gender */ FROM auth.userinfo WHERE given_name = ? OR family_name = ?"""
-  val models = pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].executeQuery(params, strOne)
+  val models = pgSqlAnalyzer.executeQuery(params, strOne)
   for(m <- models){
     println(m)
   }
   val strTwo: String = """SELECT family_name, given_name, gender FROM auth.userinfo"""
-  for(m <- pgSqlAnalyzer.asInstanceOf[PostgreSqlAnalyzer].executeQuery(null, strTwo)){
+  for(m <- pgSqlAnalyzer.executeQuery(null, strTwo)){
     println(m)
   }
 
@@ -70,7 +70,7 @@ object Main extends App {
   val mySqlAnalyzer =  BaseAnalyzer(DataSrcType.dstMySQL, mySqlMap)
   var sqlThree: String = """SELECT (CASE table_type WHEN 'BASE TABLE' THEN 'Table' ELSE 'View' END) AS 'Type', '' AS 'Schema', table_name AS 'Name' FROM information_schema.tables WHERE (table_type = 'base table' OR table_type = 'view')AND table_schema= ? """
   val params3 = List("test")
-  for(m <- mySqlAnalyzer.asInstanceOf[MySqlAnalyzer].executeQuery(params3, sqlThree)){
+  for(m <- mySqlAnalyzer.executeQuery(params3, sqlThree)){
     println(m)
   }
 
