@@ -9,9 +9,15 @@ import scala.slick.jdbc.{StaticQuery => Q}
 import Models.DataEntity
 import Models.DataEntityItem
 
+object DataTypes extends Enumeration {
+  type DataTypes = Value
+  val dtString, dtBoolean, dtInteger, dtLong, dtShort, dtByte, dtDouble, dtFloat, dtDecimal, dtBigDecimal, dtdDate, dtTime, dtTimestamp  = Value
+}
+import DataTypes._
+
 object DataSrcType extends Enumeration {
   type DataSrcType = Value
-  val dstMSSqlServer, dstMySQL, dstPostgresql, dstOracle, dstMongoDB, dstFlatFile, dstJsonFile = Value
+  val dstMSSqlServer, dstMySQL, dstPostgresql, dstOracle, dstMongoDB, dstFlatFile, dstJsonFile  = Value
 }
 import DataSrcType._
 
