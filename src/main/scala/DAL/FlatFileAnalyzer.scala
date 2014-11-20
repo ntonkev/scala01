@@ -13,10 +13,13 @@ import scala.util.Try
  */
 class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstFlatFile, connStrSettings) with DataTypeValidator {
   val ffname: String = GetFlatFileName()
+  val ffpath: String = GetCurrentDirectory + "//Data/Seeds//"
   val ffurl: String = GetFlatFilePath()
   val ffhasheader: Boolean = FlatFileHasHeader()
   val ffdelimiter: Char = GetFlatFileDelimiter()
 
+
+  def GetCurrentDirectory = new java.io.File( "." ).getCanonicalPath
 
   protected def GetFlatFileName(): String = {
     return connStrSettings.exists({case(key, _) => key == "flatfile.name"}) match {
@@ -74,7 +77,7 @@ class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyze
 
   def getEntityItems(entity: String): Seq[DataEntityItem]  = {
     val linesToTake = ffhasheader match { case true => 2 case false => 1 }
-    val lines = scala.io.Source.fromFile(ffurl).getLines().take(linesToTake)
+    val lines = scala.io.Source.fromFile(ffpath + ffurl).getLines().take(linesToTake)
     val firstLine: String = lines.take(1).mkString
     val dataLine = (ffhasheader match { case true => lines.take(1).mkString case false => firstLine }).split(ffdelimiter)
     val headers = GetHeader(firstLine)

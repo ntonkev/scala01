@@ -18,7 +18,7 @@ object Main extends App {
                       "database.username" -> "root",
                       "database.password" -> "")
 
-  val flatFileMap = Map("flatfile.url" -> "/users/nikolatonkev/sbtprojects/scala01/Data/Seeds/flatfile.csv",
+  val flatFileMap = Map("flatfile.url" -> "//flatfile.csv",
                         //"flatfile.name" -> "inv-details.csv",
                         "flatfile.has.header" -> "true",
                         "flatfile.delimiter" -> ",")
@@ -75,6 +75,6 @@ object Main extends App {
   val ffAnalyser = BaseAnalyzer(DataSrcType.dstFlatFile, flatFileMap)
   val ffEntity = ffAnalyser.getEntityItems()
   for(e <- ffEntity){
-    println(e.OrderIndex + "\t" + e.ColumnName  + "\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
+    println(e.OrderIndex + "\t" + e.ColumnName  + "\t\t\t\t\t\t\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
   }
 }
