@@ -76,11 +76,11 @@ class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyze
     val linesToTake = ffhasheader match { case true => 2 case false => 1 }
     val lines = scala.io.Source.fromFile(ffurl).getLines().take(linesToTake)
     val firstLine: String = lines.take(1).mkString
-    val dataLine = (ffhasheader match { case true => lines.toList(1) case false => firstLine }).split(ffdelimiter)
+    val dataLine = (ffhasheader match { case true => lines.take(1).mkString case false => firstLine }).split(ffdelimiter)
     val headers = GetHeader(firstLine)
     val columns = new Array[DataEntityItem](dataLine.length)
     for(n <- 0 to dataLine.length - 1){
-      columns(n) = new DataEntityItem(headers(0), n + 1, "", true, GetDataType(dataLine(n)), 0, 0, 0)
+      columns(n) = new DataEntityItem(headers(n), n + 1, "", true, GetDataType(dataLine(n)), 0, 0, 0)
     }
     return columns.toSeq
   }

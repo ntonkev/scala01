@@ -18,9 +18,9 @@ object Main extends App {
                       "database.username" -> "root",
                       "database.password" -> "")
 
-  val flatFileMap = Map("flatfile.url" -> "C:\\Users\\ntonkev\\IdeaProjects\\scala01\\Data\\Seeds\\inv-details.csv",
-                        "flatfile.name" -> "inv-details.csv",
-                        //"flatfile.has.header" -> "true",
+  val flatFileMap = Map("flatfile.url" -> "/users/nikolatonkev/sbtprojects/scala01/Data/Seeds/flatfile.csv",
+                        //"flatfile.name" -> "inv-details.csv",
+                        "flatfile.has.header" -> "true",
                         "flatfile.delimiter" -> ",")
   /*
   println("Postgresql...")

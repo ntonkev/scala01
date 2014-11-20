@@ -9,12 +9,14 @@ trait DataTypeValidator {
     val IntRegEx = "(\\d+)".r
     val NumericRegEx = "((-|\\+)?[0-9]+(\\.[0-9]+)?)+".r //"([0-9]*)\\.[0]".r
     val DoubleRegEx = "\\d+(\\.\\d*)?".r
-    val TimeRegEx = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$".r
+    //val TimeRegEx = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$".r
+    val MoneyRegEx = "^\\$?[0-9]+(,[0-9]{3})*(\\.[0-9]{2})?$ ".r
     value match  {
       case IntRegEx(num) => "Integer"
       case NumericRegEx(num) => "Decimal"
       case DoubleRegEx(num) => "Double"
-      case TimeRegEx(num) => "Time"
+      case MoneyRegEx(num) => "Money"
+      //case TimeRegEx(num) => "Time"
       case _ => "String"
     }
   }
