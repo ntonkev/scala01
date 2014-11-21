@@ -83,7 +83,7 @@ class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyze
     val headers = GetHeader(firstLine)
     val columns = new Array[DataEntityItem](dataLine.length)
     for(n <- 0 to dataLine.length - 1){
-      columns(n) = new DataEntityItem(headers(n), n + 1, "", true, GetDataType(dataLine(n)), 0, 0, 0)
+      columns(n) = new DataEntityItem(headers(n) + "{ " + dataLine(n) + " }" , n + 1, "", true, GetDataType(dataLine(n)), 0, 0, 0)
     }
     return columns.toSeq
   }
