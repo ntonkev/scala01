@@ -9,7 +9,8 @@ scalaVersion := "2.10.4"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka"   %% "akka-actor"                   % "2.3.2",
-  "com.typesafe.akka"   %% "akka-slf4j"                   % "2.3.2",
+  "org.slf4j"            % "slf4j-nop"                    % "1.6.4",
+  //"com.typesafe.akka"   %% "akka-slf4j"                   % "2.3.2",
   "org.scalatest"       %% "scalatest"                    % "2.2.1" % "test",
   "org.scalamock"       %% "scalamock-scalatest-support"  % "3.2-RC1" % "test",
   "net.debasishg"       %% "redisclient"                  % "2.13",

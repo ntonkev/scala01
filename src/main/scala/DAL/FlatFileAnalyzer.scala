@@ -11,43 +11,24 @@ import scala.util.Try
 /**
  * Created by NTonkev on 11/19/2014.
  */
-class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstFlatFile, connStrSettings) with DataTypeValidator {
-  val ffname: String = GetFlatFileName()
-  val ffpath: String = GetCurrentDirectory + "//Data/Seeds//"
-  val ffurl: String = GetFlatFilePath()
+class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstFlatFile, connStrSettings) with DataTypeValidator with FileAnalyzer {
   val ffhasheader: Boolean = FlatFileHasHeader()
   val ffdelimiter: Char = GetFlatFileDelimiter()
 
-
-  def GetCurrentDirectory = new java.io.File( "." ).getCanonicalPath
-
-  protected def GetFlatFileName(): String = {
-    return connStrSettings.exists({case(key, _) => key == "flatfile.name"}) match {
-      case true => connStrSettings("flatfile.name")
-      case false => connStrSettings.exists({case(key, _) => key == "flatfile.url"}) match {
-        case true => connStrSettings("flatfile.url").substring(connStrSettings("flatfile.url").lastIndexOf("\\")+1)
-        case false => ""
-      }
-    }
-  }
-
-  protected def GetFlatFilePath(): String = {
-    return connStrSettings.exists({case(key, _) => key == "flatfile.url"}) match {
-      case true => connStrSettings("flatfile.url")
-      case false => ""
-    }
-  }
+  def fname = FileAnalyzer.GetFileName(connStrSettings)
+  def fpath = FileAnalyzer.GetCurrentDirectory + "//Data/Seeds//"
+  def furl = FileAnalyzer.GetFilePath(connStrSettings)
 
   protected def FlatFileHasHeader(): Boolean = {
-    return connStrSettings.exists({case(key, _) => key == "flatfile.has.header"}) match {
-      case true => Try(connStrSettings("flatfile.has.header").toBoolean).getOrElse(false)
+    return connStrSettings.exists({case(key, _) => key == "file.has.header"}) match {
+      case true => Try(connStrSettings("file.has.header").toBoolean).getOrElse(false)
       case false => false
     }
   }
 
   protected def GetFlatFileDelimiter(): Char = {
-    return connStrSettings.exists({case(key, _) => key == "flatfile.delimiter"}) match {
-      case true => connStrSettings("flatfile.delimiter").trim().charAt(0)
+    return connStrSettings.exists({case(key, _) => key == "file.delimiter"}) match {
+      case true => connStrSettings("file.delimiter").trim().charAt(0)
       case false => ','
     }
   }
@@ -72,12 +53,12 @@ class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyze
   //def GetMySqlDataBase() = GetDataBase()
 
   def getEntities(): Seq[DataEntity]  = {
-    return Seq(new DataEntity("File", "", ffname))
+    return Seq(new DataEntity("File", "", fname))
   }
 
   def getEntityItems(entity: String): Seq[DataEntityItem]  = {
     val linesToTake = ffhasheader match { case true => 2 case false => 1 }
-    val lines = scala.io.Source.fromFile(ffpath + ffurl).getLines().take(linesToTake)
+    val lines = scala.io.Source.fromFile(fpath + furl).getLines().take(linesToTake)
     val firstLine: String = lines.take(1).mkString
     val dataLine = (ffhasheader match { case true => lines.take(1).mkString case false => firstLine }).split(ffdelimiter)
     val headers = GetHeader(firstLine)
@@ -86,5 +67,9 @@ class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyze
       columns(n) = new DataEntityItem(headers(n) + "{ " + dataLine(n) + " }" , n + 1, "", true, GetDataType(dataLine(n)), 0, 0, 0)
     }
     return columns.toSeq
+  }
+
+  def createEntity(entity: String, entityItems: Seq[DataEntityItem]): Boolean ={
+    return true
   }
 }

@@ -10,14 +10,14 @@ import Models.DataEntity
 import Models.DataEntityItem
 
 object DataTypes extends Enumeration {
-  type DataTypes = Value
-  val dtString, dtBoolean, dtInteger, dtLong, dtShort, dtByte, dtDouble, dtFloat, dtDecimal, dtBigDecimal, dtdDate, dtTime, dtTimestamp  = Value
+type DataTypes = Value
+val dtString, dtBoolean, dtInteger, dtLong, dtShort, dtByte, dtDouble, dtFloat, dtDecimal, dtBigDecimal, dtdDate, dtTime, dtTimestamp  = Value
 }
 import DataTypes._
 
 object DataSrcType extends Enumeration {
   type DataSrcType = Value
-  val dstMSSqlServer, dstMySQL, dstPostgresql, dstOracle, dstMongoDB, dstFlatFile, dstJsonFile  = Value
+  val dstH2, dstMSSqlServer, dstMySQL, dstPostgresql, dstOracle, dstMongoDB, dstFlatFile, dstJsonFile  = Value
 }
 import DataSrcType._
 
@@ -26,6 +26,7 @@ abstract class BaseAnalyzer(dataSrcType: DataSrcType, val connStrSettings: Map[S
 
   def getEntities(): Seq[DataEntity]
   def getEntityItems(entity: String = ""): Seq[DataEntityItem]
+  def createEntity(entity: String, entityItems: Seq[DataEntityItem]): Boolean
 
   protected def GetDataBase(): Database = {
     return dataSrcType match {
@@ -34,7 +35,6 @@ abstract class BaseAnalyzer(dataSrcType: DataSrcType, val connStrSettings: Map[S
       //TODO: Throw exception
       //case _ => new Exception("No data source type specifyed")
     }
-
   }
 
   protected def runQryWithoutParams(sqlStr: String): Seq[Object] ={
@@ -62,8 +62,16 @@ abstract class BaseAnalyzer(dataSrcType: DataSrcType, val connStrSettings: Map[S
 
 
 object BaseAnalyzer {
+  def createH2Analyzer(connStrSettings: Map[String, String]): H2Analyzer = {
+    return new H2Analyzer(connStrSettings)
+  }
+
   def createFlatFileAnalyzer(connStrSettings: Map[String, String]): FlatFileAnalyzer = {
     return new FlatFileAnalyzer(connStrSettings)
+  }
+
+  def createJsonAnalyzer(connStrSettings: Map[String, String]): JsonAnalyzer = {
+    return new JsonAnalyzer(connStrSettings)
   }
 
   def createPostgreSqlAnalyzer(connStrSettings: Map[String, String]): PostgreSqlAnalyzer = {
@@ -75,8 +83,10 @@ object BaseAnalyzer {
   }
 
   def apply(dataSrcType: DataSrcType, connStrSettings: Map[String, String]) = dataSrcType match {
+    case DataSrcType.dstH2 => createH2Analyzer(connStrSettings)
     case DataSrcType.dstPostgresql => createPostgreSqlAnalyzer(connStrSettings)
     case DataSrcType.dstMySQL => createMySqlAnalyzer(connStrSettings)
     case DataSrcType.dstFlatFile => createFlatFileAnalyzer(connStrSettings)
+    case DataSrcType.dstJsonFile => createJsonAnalyzer(connStrSettings)
   }
 }

@@ -19,6 +19,8 @@ trait DataTypeValidator {
     val ddmyyyyRegEx = """^(0[1-9]|[12][0-9]|3[01])[- /.]([1-9]|1[0-2])[- /.](19|20)\d\d$""".r
     val ddmmyyyyRegEx = """^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[0-2])[- /.](19|20)\d\d$""".r
     val MoneyRegEx = """(\$[0-9]+(?:\.[0-9][0-9])?)(?![\d])""".r
+    val GuidRegEx = """^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$""".r
+
     value match {
       case IntRegEx(a) => "Integer"
       case NumericRegEx(a) => "Decimal"
@@ -31,17 +33,8 @@ trait DataTypeValidator {
       case yyyymmddHHMMSSRegEx(year, mont, day) => "DateTime"
       case ddmyyyyRegEx(day, month, year) => "Date"
       case ddmmyyyyRegEx(day, month, year) => "Date"
+      case GuidRegEx() => "GUID"
       case _ => "String"
     }
   }
 }
-
-//object DataTypeValidator{
-//}
-
-
-//dd[/-.]mm[/-.]yyyy
-//(^(0[1-9]|1[0-2])[/](0[1-9]|1[0-9]|2[0-9]|3[0-1])[/](19|20)\d\d$)|(^(0[1-9]|1[0-2])[-](0[1-9]|1[0-9]|2[0-9]|3[0-1])[-](19|20)\d\d$)|(^(0[1-9]|1[0-2])[-](0[1-9]|1[0-9]|2[0-9]|3[0-1])[-](19|20)\d\d$)
-
-//d[/-.]m[/-.]yyyy
-//(^([1-9]|1[0-2])[/]([1-9]|1[0-9]|2[0-9]|3[0-1])[/](19|20)\d\d$)|(^([1-9]|1[0-2])[-]([1-9]|1[0-9]|2[0-9]|3[0-1])[-](19|20)\d\d$)|(^([1-9]|1[0-2])[.]([1-9]|1[0-9]|2[0-9]|3[0-1])[.](19|20)\d\d$)

@@ -7,6 +7,10 @@ import RedBlackTree.RBTree
 object Main extends App {
 
   //val rbTree: RBTree[Comparable[Int], Int]  = new RBTree[Comparable[Int],Int]()
+
+  val h2SqlMap = Map("database.url" -> "jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
+                     "database.name" -> "ffsdata")
+
   val pgSqlMap = Map("database.url" -> "jdbc:postgresql://ec2-54-221-223-92.compute-1.amazonaws.com:5432/db7k8198l73h6l",
                     "database.username" -> "aypkpqlvwdznkk",
                     "database.password" -> "blItMMzvKwWjEFI1ItcWhc-uix",
@@ -18,11 +22,19 @@ object Main extends App {
                       "database.username" -> "root",
                       "database.password" -> "")
 
-  val flatFileMap = Map("flatfile.url" -> "//flatfile.csv",
-                        //"flatfile.name" -> "inv-details.csv",
-                        "flatfile.has.header" -> "true",
-                        "flatfile.delimiter" -> ",")
-  /*
+  val flatFileMap = Map("file.url" -> "flatfile.csv",
+    //"file.name" -> "inv-details.csv",
+    "file.has.header" -> "true",
+    "file.delimiter" -> ",")
+
+
+  val jsonFileMap = Map("file.url" -> "jsondata.json")
+
+  println("H2...")
+  val h2SqlAnalyzer =  BaseAnalyzer(DataSrcType.dstH2, h2SqlMap)
+  val h2 = h2SqlAnalyzer.createEntity("thetable", null)
+  println(h2)
+/*
   println("Postgresql...")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
   val pgEntities = pgSqlAnalyzer.getEntities()
@@ -48,9 +60,10 @@ object Main extends App {
     println(m)
   }
 
+
   println("\n")
   println("\n")
-  println("mySQL...")
+  printlnSQL...")
   val mySqlAnalyzer =  BaseAnalyzer(DataSrcType.dstMySQL, mySqlMap)
   var sqlThree: String = """SELECT (CASE table_type WHEN 'BASE TABLE' THEN 'Table' ELSE 'View' END) AS 'Type', '' AS 'Schema', table_name AS 'Name' FROM information_schema.tables WHERE (table_type = 'base table' OR table_type = 'view')AND table_schema= ? """
   val params3 = List("test")
@@ -71,10 +84,27 @@ object Main extends App {
   }
   */
 
-  println("Flat file...")
-  val ffAnalyser = BaseAnalyzer(DataSrcType.dstFlatFile, flatFileMap)
-  val ffEntity = ffAnalyser.getEntityItems()
-  for(e <- ffEntity){
-    println(e.OrderIndex + "\t" + e.ColumnName  + "\t\t\t\t\t\t\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
-  }
+//  println("Flat file...")
+//  val ffAnalyser = BaseAnalyzer(DataSrcType.dstFlatFile, flatFileMap)
+//  val ffEntity = ffAnalyser.getEntities()
+//  for(e <- ffEntity){
+//    println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
+//  }
+//  val ffEntityItems = ffAnalyser.getEntityItems()
+//  for(e <- ffEntityItems){
+//    println(e.OrderIndex + "\t" + e.ColumnName  + "\t\t\t\t\t\t\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
+//  }
+
+//  println("\n\n\n")
+//  println("JSON file...")
+//  val jsonAnalyser = BaseAnalyzer(DataSrcType.dstJsonFile, jsonFileMap)
+//  val jsonEntity = jsonAnalyser.getEntities()
+//  for(e <- jsonEntity){
+//    println(e.Type  + "\t" + e.Schema + "\t" + e.Name)
+//  }
+//  println("\n\n\n")
+//  val jsonEntityItems = jsonAnalyser.getEntityItems()
+//  for(e <- ffEntity){
+//    println(e.OrderIndex + "\t" + e.ColumnName  + "\t\t\t\t\t\t\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
+//  }
 }

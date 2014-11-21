@@ -38,4 +38,8 @@ class MySqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(D
       Q.queryNA[DataEntityItem]("SELECT COLUMN_NAME AS 'Column', ORDINAL_POSITION AS 'OrderIndex', COLUMN_DEFAULT AS 'DefaultValue', IS_NULLABLE AS 'Nullable', DATA_TYPE AS 'Type', CHARACTER_MAXIMUM_LENGTH AS 'Lenght', NUMERIC_PRECISION AS 'Precision', NUMERIC_SCALE AS 'Scale' FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" + entity + "'AND table_schema = '" + dbname + "'").list
     }
   }
+
+  def createEntity(entity: String, entityItems: Seq[DataEntityItem]): Boolean ={
+    return true
+  }
 }
