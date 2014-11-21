@@ -8,9 +8,9 @@ import scala.util.matching.Regex
 trait DataTypeValidator {
 
   def GetDataType(value: String): String = {
-    val IntRegEx = "(\\d+)".r
-    val NumericRegEx = "((-|\\+)?[0-9]+(\\.[0-9]+)?)+".r //"([0-9]*)\\.[0]".r
-    val DoubleRegEx = "\\d+(\\.\\d*)?".r
+    val IntRegEx = """(-|\d+)""".r
+    val NumericRegEx = """((-|\+)?[0-9]+(\.[0-9]+)?)+""".r
+    val DoubleRegEx = """-|\d+(\.\d*)?""".r
     val DateTimeRegEx = """(\d{2})-([a-zA-Z]{3})-(\d{4})""".r
     val mdyyyyRegEx = """^([1-9]|1[0-2])[/.-]([1-9]|1[0-9]|2[0-9]|3[0-1])[/.-](19|20)\d\d$""".r
     val mmddyyyyRegEx = """^(0[1-9]|1[0-2])[/.-](0[1-9]|1[0-9]|2[0-9]|3[0-1])[/.-](19|20)\d\d$""".r
