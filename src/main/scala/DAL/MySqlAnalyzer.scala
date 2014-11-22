@@ -39,6 +39,10 @@ class MySqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(D
     }
   }
 
+  def createEntity(sqlStr: String): Boolean = {
+    return true
+  }
+
   def createEntity(entity: String, entityItems: Seq[DataEntityItem]): Boolean ={
     return true
   }

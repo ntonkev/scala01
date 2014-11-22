@@ -9,12 +9,6 @@ import scala.slick.jdbc.{StaticQuery => Q}
 import Models.DataEntity
 import Models.DataEntityItem
 
-object DataTypes extends Enumeration {
-type DataTypes = Value
-val dtString, dtBoolean, dtInteger, dtLong, dtShort, dtByte, dtDouble, dtFloat, dtDecimal, dtBigDecimal, dtdDate, dtTime, dtTimestamp  = Value
-}
-import DataTypes._
-
 object DataSrcType extends Enumeration {
   type DataSrcType = Value
   val dstH2, dstMSSqlServer, dstMySQL, dstPostgresql, dstOracle, dstMongoDB, dstFlatFile, dstJsonFile  = Value
@@ -26,6 +20,7 @@ abstract class BaseAnalyzer(dataSrcType: DataSrcType, val connStrSettings: Map[S
 
   def getEntities(): Seq[DataEntity]
   def getEntityItems(entity: String = ""): Seq[DataEntityItem]
+  def createEntity(sqlStr: String): Boolean
   def createEntity(entity: String, entityItems: Seq[DataEntityItem]): Boolean
 
   protected def GetDataBase(): Database = {

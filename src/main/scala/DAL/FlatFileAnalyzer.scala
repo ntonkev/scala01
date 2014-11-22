@@ -11,11 +11,13 @@ import scala.util.Try
 /**
  * Created by NTonkev on 11/19/2014.
  */
-class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstFlatFile, connStrSettings) with DataTypeValidator with FileAnalyzer {
+class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstFlatFile, connStrSettings) with DataTypeValidator {
   val ffhasheader: Boolean = FlatFileHasHeader()
   val ffdelimiter: Char = GetFlatFileDelimiter()
 
-  def fname = FileAnalyzer.GetFileName(connStrSettings)
+  val names = FileAnalyzer.GetFileName(connStrSettings)
+  def fname = names._1
+  def fshortname = names._2
   def fpath = FileAnalyzer.GetCurrentDirectory + "//Data/Seeds//"
   def furl = FileAnalyzer.GetFilePath(connStrSettings)
 
@@ -64,9 +66,13 @@ class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyze
     val headers = GetHeader(firstLine)
     val columns = new Array[DataEntityItem](dataLine.length)
     for(n <- 0 to dataLine.length - 1){
-      columns(n) = new DataEntityItem(headers(n) + "{ " + dataLine(n) + " }" , n + 1, "", true, GetDataType(dataLine(n)), 0, 0, 0)
+      columns(n) = new DataEntityItem(headers(n), n + 1, "", true, GetDataType(dataLine(n)), 0, 0, 0)
     }
     return columns.toSeq
+  }
+
+  def createEntity(sqlStr: String): Boolean = {
+    return true
   }
 
   def createEntity(entity: String, entityItems: Seq[DataEntityItem]): Boolean ={

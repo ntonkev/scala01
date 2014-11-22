@@ -48,6 +48,10 @@ class PostgreSqlAnalyzer(connStrSettings: Map[String, String]) extends BaseAnaly
     }
   }
 
+  def createEntity(sqlStr: String): Boolean = {
+    return true
+  }
+
   def createEntity(entity: String, entityItems: Seq[DataEntityItem]): Boolean ={
     return true
   }

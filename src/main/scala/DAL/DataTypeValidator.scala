@@ -18,14 +18,14 @@ trait DataTypeValidator {
     val yyyymmddHHMMSSRegEx = """^((?:19|20)\d\d)[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[ T].*""".r
     val ddmyyyyRegEx = """^(0[1-9]|[12][0-9]|3[01])[- /.]([1-9]|1[0-2])[- /.](19|20)\d\d$""".r
     val ddmmyyyyRegEx = """^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[0-2])[- /.](19|20)\d\d$""".r
-    val MoneyRegEx = """(\$[0-9]+(?:\.[0-9][0-9])?)(?![\d])""".r
+    val CurrencyRegEx = """(\$[0-9]+(?:\.[0-9][0-9])?)(?![\d])""".r
     val GuidRegEx = """^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$""".r
 
     value match {
       case IntRegEx(a) => "Integer"
       case NumericRegEx(a) => "Decimal"
       case DoubleRegEx(a) => "Double"
-      case MoneyRegEx(a) => "Money"
+      case CurrencyRegEx(a) => "Currency"
       case DateTimeRegEx(day, month, year)  => "DateTime"
       case mdyyyyRegEx(month, day, year) => "Date"
       case mmddyyyyRegEx(month, day, year) => "Date"

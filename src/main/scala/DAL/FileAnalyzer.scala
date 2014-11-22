@@ -10,44 +10,20 @@ object DataSourceFileTypes extends Enumeration {
 }
 import DataSourceFileTypes._
 
-trait FileAnalyzer {
-  //var connStrSettings: Map[String, String]
-  def fname: String //= GetFileName(connStrSettings: Map[String, String])
-  def fpath: String //= GetCurrentDirectory + "//Data/Seeds//"
-  def furl: String //= GetFilePath()
-
-//  def GetCurrentDirectory = new java.io.File( "." ).getCanonicalPath
-//
-//  protected def GetFileName(connStrSettings: Map[String, String]): String = {
-//    return connStrSettings.exists({case(key, _) => key == "file.name"}) match {
-//      case true => connStrSettings("file.name")
-//      case false => connStrSettings.exists({case(key, _) => key == "file.url"}) match {
-//        case true => connStrSettings("file.url").substring(connStrSettings("file.url").lastIndexOf("\\")+1)
-//        case false => ""
-//      }
-//    }
-//  }
-//
-//  protected def GetFilePath(connStrSettings: Map[String, String]): String = {
-//    return connStrSettings.exists({case(key, _) => key == "file.url"}) match {
-//      case true => connStrSettings("file.url")
-//      case false => ""
-//    }
-//  }
-
-}
+//trait FileAnalyzer
 
 object FileAnalyzer {
   def GetCurrentDirectory = new java.io.File( "." ).getCanonicalPath
 
-  def GetFileName(connStrSettings: Map[String, String]): String = {
-    return connStrSettings.exists({case(key, _) => key == "file.name"}) match {
+  def GetFileName(connStrSettings: Map[String, String]): Tuple2[String, String] = {
+    val name = connStrSettings.exists({case(key, _) => key == "file.name"}) match {
       case true => connStrSettings("file.name")
       case false => connStrSettings.exists({case(key, _) => key == "file.url"}) match {
         case true => connStrSettings("file.url").substring(connStrSettings("file.url").lastIndexOf("\\")+1)
         case false => ""
       }
     }
+    return (name, name.substring(0, name.lastIndexOf(".")))
   }
 
   def GetFilePath(connStrSettings: Map[String, String]): String = {

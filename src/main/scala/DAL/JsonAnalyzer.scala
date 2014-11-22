@@ -13,9 +13,11 @@ import scala.util.parsing.json.JSON
 /**
  * Created by NTonkev on 11/21/2014.
  */
-class JsonAnalyzer (connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstFlatFile, connStrSettings) with DataTypeValidator with FileAnalyzer {
+class JsonAnalyzer (connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstFlatFile, connStrSettings) with DataTypeValidator {
 
-  def fname = FileAnalyzer.GetFileName(connStrSettings)
+  val names = FileAnalyzer.GetFileName(connStrSettings)
+  def fname = names._1
+  def fshortname = names._2
   def fpath = FileAnalyzer.GetCurrentDirectory + "//Data/Seeds//"
   def furl = FileAnalyzer.GetFilePath(connStrSettings)
 
@@ -35,6 +37,10 @@ class JsonAnalyzer (connStrSettings: Map[String, String]) extends BaseAnalyzer(D
     val firstItem = json.get.asInstanceOf[List[Any]].head
     println(firstItem)
     return null
+  }
+
+  def createEntity(sqlStr: String): Boolean = {
+    return true
   }
 
   def createEntity(entity: String, entityItems: Seq[DataEntityItem]): Boolean ={
