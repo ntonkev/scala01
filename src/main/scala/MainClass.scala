@@ -114,6 +114,7 @@ object Main extends App {
 
   val h2params = List("Lavazza", 23, 3.49, 0.49, 3.35)
   var h2InsertQry: String = """Insert Into Coffee(name, sup_id, price, sales, total) values(?, ?, ?, ?, ?)"""
+  h2SqlAnalyzer.asInstanceOf[H2Analyzer].insertData(h2params, h2InsertQry)
 
   val h2Qry: String = String.format("""SELECT * FROM %s""", "Coffee")
   for(m <- h2SqlAnalyzer.executeQuery(null, h2Qry)){

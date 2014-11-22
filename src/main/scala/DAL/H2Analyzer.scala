@@ -92,6 +92,26 @@ class H2Analyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(Data
     }
   }
 
+  def insertData(params: List[Any], sqlStr: String): Boolean = {
+    try
+    {
+      val db = this.GetDataBase()
+      db.withSession { implicit session => {
+        val query = Q.update[List[Any]](sqlStr)
+        val result = query(params).first
+        return result != 0
+        }
+      }
+    }
+    catch {
+      case e: Exception => {
+        println("Error creating entity: " + e.fillInStackTrace())
+        return false
+      }
+    }
+  }
+
+
   protected def getNullState(e: DataEntityItem): String = e.IsNullable match {
     case true => " null"
     case false => "not null"
