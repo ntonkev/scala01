@@ -11,7 +11,7 @@ import Models.DataEntityItem
 
 object DataSrcType extends Enumeration {
   type DataSrcType = Value
-  val dstH2, dstMSSqlServer, dstMySQL, dstPostgresql, dstOracle, dstMongoDB, dstFlatFile, dstJsonFile  = Value
+  val dstH2, dstMSSqlServer, dstMySQL, dstPostgresql, dstOracle, dstMongoDB, dstCassandra, dstFlatFile, dstJsonFile  = Value
 }
 import DataSrcType._
 
@@ -77,11 +77,16 @@ object BaseAnalyzer {
     return new MySqlAnalyzer(connStrSettings)
   }
 
+  def createCassandraAnalyzer(connStrSettings: Map[String, String]): CassandraAnalyzer = {
+    return new CassandraAnalyzer(connStrSettings)
+  }
+
   def apply(dataSrcType: DataSrcType, connStrSettings: Map[String, String]) = dataSrcType match {
     case DataSrcType.dstH2 => createH2Analyzer(connStrSettings)
     case DataSrcType.dstPostgresql => createPostgreSqlAnalyzer(connStrSettings)
     case DataSrcType.dstMySQL => createMySqlAnalyzer(connStrSettings)
     case DataSrcType.dstFlatFile => createFlatFileAnalyzer(connStrSettings)
     case DataSrcType.dstJsonFile => createJsonAnalyzer(connStrSettings)
+    case DataSrcType.dstCassandra => createCassandraAnalyzer(connStrSettings)
   }
 }

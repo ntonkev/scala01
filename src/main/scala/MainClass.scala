@@ -121,4 +121,8 @@ object Main extends App {
     println(m)
   }
 
+  println("\nCassandra...")
+  val cassAnalyser = BaseAnalyzer(DataSrcType.dstCassandra, null)
+  val casdra = cassAnalyser.asInstanceOf[CassandraAnalyzer].GetCassandraCluster()
+
 }
