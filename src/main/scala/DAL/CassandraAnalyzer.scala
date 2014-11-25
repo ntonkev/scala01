@@ -23,32 +23,20 @@ import scala.collection.JavaConversions._
 
 class CassandraAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstMySQL, connStrSettings)  with ImplicitDataEntity{
 
-  implicit override def GetDataBase(): Database = {
-//    val url = connStrSettings("database.url")// + dbname
-//    val driver = "org.h2.Driver"
+  val node = connStrSettings("database.url")
+  val keyspace = connStrSettings("database.name")
 
+  private val cluster = Cluster.builder().addContactPoint(node).build()
+  //log(cluster.getMetadata())
+  val session = cluster.connect(keyspace)
+
+  implicit override def GetDataBase(): Database = {
     return null //Database.forURL("jdbc:h2:mem:testdb;;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
   }
 
-  def GetCassandraCluster(): Cluster = {
-    try
-    {
-      //val client = new SimpleClient("192.168.0.104:9142")
-      val cluster = Cluster.builder().addContactPoint("/192.168.0.104:9042").build()
-      //log(cluster.getMetadata())
-      val session = cluster.connect()
-      return cluster
-    }
-    catch {
-      case e: Exception => {
-        println("Error connectin to the cluster 192.168.9.104: " + e.fillInStackTrace())
-        return null
-      }
-    }
-  }
 
   def getEntities(): Seq[DataEntity]  = {
-    val client = GetCassandraCluster()
+    //val client = GetCassandraCluster()
    return null
   }
 
@@ -58,6 +46,7 @@ class CassandraAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyz
 
   def createEntity(slqStr: String):Boolean = {
     if (slqStr.isEmpty) return false
+    session.execute(slqStr)
     return true
   }
 

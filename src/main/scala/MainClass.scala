@@ -31,6 +31,8 @@ object Main extends App {
 
   val jsonFileMap = Map("file.url" -> "jsondata.json")
 
+  val cassandraMap = Map("database.url" -> "/127.0.0.1", "database.name" -> "demodb")
+
 /*
   println("Postgresql...")
   val pgSqlAnalyzer =  BaseAnalyzer(DataSrcType.dstPostgresql, pgSqlMap)
@@ -105,24 +107,24 @@ object Main extends App {
 //    println(e.OrderIndex + "\t" + e.ColumnName  + "\t\t\t\t\t\t\t" + e.ColumnType + "\t" + e.ColumnLenght + "\t" + e.DefaultValue + "\t" + e.IsNullable + "\t"  + e.ColumnPrecision + "\t" + e.ColumnScale)
 //  }
 
-  println("H2...")
-  val entityName = ffAnalyser.asInstanceOf[FlatFileAnalyzer].fshortname
-  val h2SqlAnalyzer =  BaseAnalyzer(DataSrcType.dstH2, h2SqlMap)
-  //val success = h2SqlAnalyzer.createEntity(entityName, ffEntityItems)
-  val success = h2SqlAnalyzer.createEntity("create table Coffee (name varchar not null, sup_id int not null, price double not null, sales int not null, total int not null )")
-  println("Table created: " + success.toString)
-
-  val h2params = List("Lavazza", 23, 3.49, 0.49, 3.35)
-  var h2InsertQry: String = """Insert Into Coffee(name, sup_id, price, sales, total) values(?, ?, ?, ?, ?)"""
-  h2SqlAnalyzer.asInstanceOf[H2Analyzer].insertData(h2params, h2InsertQry)
-
-  val h2Qry: String = String.format("""SELECT * FROM %s""", "Coffee")
-  for(m <- h2SqlAnalyzer.executeQuery(null, h2Qry)){
-    println(m)
-  }
+//  println("H2...")
+//  val entityName = ffAnalyser.asInstanceOf[FlatFileAnalyzer].fshortname
+//  val h2SqlAnalyzer =  BaseAnalyzer(DataSrcType.dstH2, h2SqlMap)
+//  //val success = h2SqlAnalyzer.createEntity(entityName, ffEntityItems)
+//  val success = h2SqlAnalyzer.createEntity("create table Coffee (name varchar not null, sup_id int not null, price double not null, sales int not null, total int not null )")
+//  println("Table created: " + success.toString)
+//
+//  val h2params = List("Lavazza", 23, 3.49, 0.49, 3.35)
+//  var h2InsertQry: String = """Insert Into Coffee(name, sup_id, price, sales, total) values(?, ?, ?, ?, ?)"""
+//  h2SqlAnalyzer.asInstanceOf[H2Analyzer].insertData(h2params, h2InsertQry)
+//
+//  val h2Qry: String = String.format("""SELECT * FROM %s""", "Coffee")
+//  for(m <- h2SqlAnalyzer.executeQuery(null, h2Qry)){
+//    println(m)
+//  }
 
   println("\nCassandra...")
-  val cassAnalyser = BaseAnalyzer(DataSrcType.dstCassandra, null)
-  val casdra = cassAnalyser.asInstanceOf[CassandraAnalyzer].GetCassandraCluster()
+  val cassAnalyser = BaseAnalyzer(DataSrcType.dstCassandra, cassandraMap)
+  val casdra = cassAnalyser.createEntity("""CREATE TABLE IF NOT EXISTS dbdemo.person ( id uuid PRIMARY KEY, name text, family text, age number, country text )""")
 
 }
