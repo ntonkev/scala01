@@ -6,10 +6,7 @@ import scala.slick.driver.JdbcDriver.backend.Database
 import scala.slick.jdbc.{StaticQuery => Q}
 
 import com.datastax.driver.core.querybuilder.QueryBuilder
-import com.datastax.driver.core.Cluster
-import com.datastax.driver.core.ResultSetFuture
-import com.datastax.driver.core.Session
-import com.datastax.driver.core.Metadata
+import com.datastax.driver.core._
 import scala.collection.JavaConversions._
 
 
@@ -23,12 +20,18 @@ import scala.collection.JavaConversions._
 
 class CassandraAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyzer(DataSrcType.dstMySQL, connStrSettings)  with ImplicitDataEntity{
 
-  val node = connStrSettings("database.url")
-  val keyspace = connStrSettings("database.name")
+  val node = connStrSettings.exists({case(key, _) => key == "database.url"}) match {
+    case true => connStrSettings("database.url")
+    case false => null
+  }
+  val keyspace = connStrSettings.exists({case(key, _) => key == "database.name"}) match {
+    case true => connStrSettings("database.name")
+    case false => null
+  }
 
-  private val cluster = Cluster.builder().addContactPoint(node).build()
+  private val cluster = if(node != null) Cluster.builder().addContactPoint(node).build() else null
   //log(cluster.getMetadata())
-  val session = cluster.connect(keyspace)
+  val session = if(keyspace != null) cluster.connect(keyspace) else cluster.connect()
 
   implicit override def GetDataBase(): Database = {
     return null //Database.forURL("jdbc:h2:mem:testdb;;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
@@ -36,7 +39,13 @@ class CassandraAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyz
 
 
   def getEntities(): Seq[DataEntity]  = {
-    //val client = GetCassandraCluster()
+    val entities = session.execute("""select columnfamily_name from system.schema_columnfamilies where keyspace_name='demodb'""")
+      var result = new Array[DataEntity](entities.size)
+      for(row <- entities ) {
+        result(result.length - 1) = new DataEntity("Table", "demodb", row.getString("columnfamily_name"))
+        println(row.getString("columnfamily_name"))
+      }
+    //println(result)
    return null
   }
 
@@ -52,6 +61,29 @@ class CassandraAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyz
 
   def createEntity(entity: String, entityItems: Seq[DataEntityItem]):Boolean = {
     return true
+  }
+
+  def execQuery(params: List[Object], sqlStr: String): Boolean = {
+    //val ps: PreparedStatement  = session.prepare(sqlStr)
+    //val batch: BatchStatement = new BatchStatement();
+    //for(p <- params){ ps.bind(p) }
+    //batch.add(ps.bind())
+    //val boundStatement: BoundStatement  = new BoundStatement(statement);
+    //session.execute(batch)
+    session.execute(sqlStr, params)
+
+    return true
+//    return params match{
+//      case null => null //runQryWithoutParams(sqlStr)
+//      case _ => null //runQryWithParams(params, sqlStr)
+//    }
+  }
+
+  override def executeQuery(params: List[Any], sqlStr: String): Seq[Object] = {
+    return params match{
+      case null => null //runQryWithoutParams(sqlStr)
+      case _ => null //runQryWithParams(params, sqlStr)
+    }
   }
 
   }

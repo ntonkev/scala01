@@ -1,4 +1,5 @@
 import java.math.BigInteger
+import java.util.UUID
 
 import DAL._
 import Models.DataEntityItem
@@ -31,7 +32,7 @@ object Main extends App {
 
   val jsonFileMap = Map("file.url" -> "jsondata.json")
 
-  val cassandraMap = Map("database.url" -> "/127.0.0.1", "database.name" -> "demodb")
+  val cassandraMap = Map("database.url" -> "localhost", "database.name" -> "demodb")
 
 /*
   println("Postgresql...")
@@ -125,6 +126,33 @@ object Main extends App {
 
   println("\nCassandra...")
   val cassAnalyser = BaseAnalyzer(DataSrcType.dstCassandra, cassandraMap)
-  val casdra = cassAnalyser.createEntity("""CREATE TABLE IF NOT EXISTS dbdemo.person ( id uuid PRIMARY KEY, name text, family text, age number, country text )""")
 
+//  val s0 = cassAnalyser.createEntity("""CREATE KEYSPACE demodb WITH replication = {'class':'SimpleStrategy', 'replication_factor':3}""")
+//  if(s0) println("Keyspace demodb created successfully")
+//  val s1 = cassAnalyser.createEntity("""CREATE TABLE demodb.person (id uuid PRIMARY KEY, firstname text, lastname text, age int)""")
+//  if(s1) println("Table person in keyspace demodb created successfully")
+  //val cassEntities = cassAnalyser.getEntities()
+
+  //val cassParams = List("E9C0DBDD-DD8B-4A6C-AF91-DF38CF365D69", "Nikola", "Tonkev", 36)
+  val cassParams = List(23, "Nikola", "Tonkev", 36)
+  val cassInsertStr: String = """INSERT INTO demodb.person(id, firstname, lastname, age) VALUES(?, ?, ?, ?)"""
+  val result = cassAnalyser.asInstanceOf[CassandraAnalyzer].execQuery(cassParams.asInstanceOf[List[Object]], cassInsertStr)
+  println(result)
 }
+
+
+/*
+
+CREATE KEYSPACE demodb WITH replication = {'class':'SimpleStrategy', 'replication_factor':3};
+
+CREATE TABLE demodb.person (id int PRIMARY KEY, firstname text, lastname text, age int)
+CREATE TABLE demodb.Addresses (id int PRIMARY KEY, personid uuid, address text, postalcode text)
+
+SELECT column_name FROM system.schema_columnfamilies WHERE keyspace_name = 'demodb' AND columnfamily_name = Y
+select columnfamily_name from system.schema_columnfamilies where keyspace_name='demodb'
+
+select 'Table' AS Type, columnfamily_name from system.schema_columnfamilies where keyspace_name='demodb'
+
+INSERT INTO demodb.person(id, firstname, lastname, age) VALUES(?, ?, ?, ?)
+
+*/
