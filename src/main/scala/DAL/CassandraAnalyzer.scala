@@ -64,13 +64,14 @@ class CassandraAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyz
   }
 
   def execQuery(params: List[Object], sqlStr: String): Boolean = {
-    //val ps: PreparedStatement  = session.prepare(sqlStr)
-    //val batch: BatchStatement = new BatchStatement();
-    //for(p <- params){ ps.bind(p) }
+    val ps: PreparedStatement  = session.prepare(sqlStr)
+    val batch: BatchStatement = new BatchStatement();
+    batch.add(ps.bind(params(0),params(1),params(2),params(3)))
+    //for(p <- params){ batch.add(ps.bind(p)) }
     //batch.add(ps.bind())
     //val boundStatement: BoundStatement  = new BoundStatement(statement);
-    //session.execute(batch)
-    session.execute(sqlStr, params)
+    session.execute(batch)
+    //session.execute(sqlStr, params)
 
     return true
 //    return params match{
