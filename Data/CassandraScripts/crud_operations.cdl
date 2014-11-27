@@ -1,0 +1,15 @@
+CREATE TYPE IF NOT EXISTS datatypes ( value varchar );
+CREATE TYPE IF NOT EXISTS column (name varchar, datatype frozen <datatypes>, nullable boolean, isprimarykey boolean );
+CREATE TYPE IF NOT EXISTS dbtable (dbschema varchar, name varchar, columns List<frozen <column>> );
+CREATE TABLE IF NOT EXISTS dbschema(id uuid primary key,  datasource varchar, dbtables MAP<varchar, FROZEN<dbtable>> );
+
+INSERT INTO dbschema(id, datasource, dbtables) VALUES(uuid(), 'demodb', {});
+INSERT INTO dbschema(id, datasource, dbtables) VALUES(uuid(), 'demodb', {'person': {dbschema: 'demodb', name: 'person', columns:null}} );
+INSERT INTO dbschema(id, datasource, dbtables) VALUES(uuid(), 'demodb', {'person': {dbschema: 'demodb', name: 'person', columns:[{ name: 'id', datatype: 'uuid', nullable: false, isprimarykey: true }]}} );
+
+
+ id                                   | datasource | tables
+--------------------------------------+------------+--------
+ fc07b189-5aac-4b5f-8043-b658f1f9f438 |     demodb |   null
+
+UPDATE dbschema SET dbtables = dbtables + {{'person': {dbschema: 'demodb', name: 'person', columns:}}}  WHERE id = 'fc07b189-5aac-4b5f-8043-b658f1f9f438';
