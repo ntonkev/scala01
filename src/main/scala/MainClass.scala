@@ -32,7 +32,7 @@ object Main extends App {
 
   val jsonFileMap = Map("file.url" -> "jsondata.json")
 
-  val cassandraMap = Map("database.url" -> "localhost", "database.name" -> "demodb")
+  val cassandraMap = Map("database.url" -> "54.148.145.149", "database.name" -> "demodb")
 
 /*
   println("Postgresql...")
@@ -133,8 +133,8 @@ object Main extends App {
 //  if(s1) println("Table person in keyspace demodb created successfully")
   //val cassEntities = cassAnalyser.getEntities()
 
-  //val cassParams = List("E9C0DBDD-DD8B-4A6C-AF91-DF38CF365D69", "Nikola", "Tonkev", 36)
-  val cassParams = List(23, "Nikola", "Tonkev", 36)
+  val cassParams = List(UUID.fromString("E9C0DBDD-DD8B-4A6C-AF91-DF38CF365D69"), "Nikola", "Tonkev", 36)
+//  val cassParams = List(23, "Nikola", "Tonkev", 36)
   val cassInsertStr: String = """INSERT INTO demodb.person(id, firstname, lastname, age) VALUES(?, ?, ?, ?)"""
   val result = cassAnalyser.asInstanceOf[CassandraAnalyzer].execQuery(cassParams.asInstanceOf[List[Object]], cassInsertStr)
   println(result)
