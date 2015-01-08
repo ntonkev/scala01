@@ -12,4 +12,17 @@ INSERT INTO dbschema(id, datasource, dbtables) VALUES(uuid(), 'demodb', {'person
 --------------------------------------+------------+--------
  fc07b189-5aac-4b5f-8043-b658f1f9f438 |     demodb |   null
 
-UPDATE dbschema SET dbtables = dbtables + {{'person': {dbschema: 'demodb', name: 'person', columns:}}}  WHERE id = 'fc07b189-5aac-4b5f-8043-b658f1f9f438';
+UPDATE dbschema SET dbtables = dbtables + {'tableone': {dbschema: 'demodb', name: 'tableone', columns:null }}  WHERE id = fa481009-9696-4f36-9253-39517eb54ac1;
+
+UPDATE dbschema SET dbtables = {'tabletwo': {dbschema: 'demodb', name: 'tabletwo', columns:null }}  WHERE id = fa481009-9696-4f36-9253-39517eb54ac1;
+
+UPDATE dbschema SET dbtables = {'tabletwo': {dbschema: 'demodb', name: 'tabletwo', columns:null }, 'tableone': {dbschema: 'demodb', name: 'tableone', columns:null }}  WHERE id = fa481009-9696-4f36-9253-39517eb54ac1;
+
+
+
+
+CREATE TABLE IF NOT EXISTS datasources( id INT PRIMARY KEY, dsname VARCHAR, dssets MAP<int, varchar> );
+INSERT INTO datasources(id, dsname, dssets) VALUES(1, 'person', {1: 's1', 2: 's2', 3: 's3', 4: 's4' } );
+INSERT INTO datasources(id, dsname, dssets) VALUES(2, 'parelations', {1: 's1' } );
+INSERT INTO datasources(id, dsname, dssets) VALUES(3, 'address', {1: 's1', 2: 's2', 3: 's3' } );
+

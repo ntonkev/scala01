@@ -1,31 +1,88 @@
 package RedBlackTree
 
+import java.util.Comparator
+
+import Scaners.ColumnTree
+
+//trait Comparator[K]  extends Comparable[K] {
+//  def compare(that: K): Int
+//  def compareTo(that: K): Int
+//}
+
 /**
  * Created by nikolatonkev on 14-11-13.
  */
-abstract class RBTree[K <: Comparable[K], V] {
+
+
+
+//class TestComparable[K, V] extends java.util.Comparator[K] {
+//
+//   def compare(a: K, b: K) = a match {
+//    case _: Int => a.asInstanceOf[Int].compareTo(b.asInstanceOf[Int])
+//    case _: Long => a.asInstanceOf[Long].compareTo(b.asInstanceOf[Long])
+//    case _: Short => a.asInstanceOf[Short].compareTo(b.asInstanceOf[Short])
+//    case _: Double => a.asInstanceOf[Double].compareTo(b.asInstanceOf[Double])
+//  }
+//
+//
+//  private def get(node: RBNode[K, V], key: K): V = {
+//    while(node != null){
+//      val cmp = compare(key, node.key)
+//
+//      if(cmp < 0){
+//        node == node.left
+//      }
+//      else if(cmp > 0){
+//        node == node.right
+//      }
+//      else{
+//        return node.value
+//      }
+//    }
+//
+//    return null.asInstanceOf[V]
+//  }
+//
+//}
+
+
+class RBTree[K, V] extends ColumnTree[K, V] with Comparator[K] {
+
+  def compare(a: K, b: K) = a match {
+    case _: Int => a.asInstanceOf[Int].compareTo(b.asInstanceOf[Int])
+    case _: Long => a.asInstanceOf[Long].compareTo(b.asInstanceOf[Long])
+    case _: Short => a.asInstanceOf[Short].compareTo(b.asInstanceOf[Short])
+    case _: Double => a.asInstanceOf[Double].compareTo(b.asInstanceOf[Double])
+  }
 
   private final val RED: Boolean = true
   private final val BLACK: Boolean = false
 
-  val root: RBNode[K, V]
+  var root: RBNode[K, V] = null
 
+//  override def compare(o1: K, o2: K) = {
+//    if (o1 == null || o2 == null) {
+//      throw new NullPointerException("Comparing null values is not supported!");
+//    }
+//    o1.compareTo(o2);
+//  }
 
   /*************************** Search **************************/
 
-  def get(key: K): V = {
+  override def get(key: K): V = {
     return get(root, key)
   }
 
-  private def get(node: RBNode[K, V], key: K): V = {
+  private def get(rbnode: RBNode[K, V], key: K): V = {
+     var node = rbnode
      while(node != null){
-        val cmp = key.compareTo(node.key)
+        val cmp = compare(key, node.key)
 
         if(cmp < 0){
-          node == node.left
+          node = node.left
         }
         else if(cmp > 0){
-          node == node.right
+          node = node.right
         }
         else{
           return node.value
@@ -41,10 +98,15 @@ abstract class RBTree[K <: Comparable[K], V] {
 
   /*************************** Insert **************************/
 
+  override def put(key: K, value: V): Unit = {
+    root = put(root, key, value)
+    root.color = BLACK
+  }
+
   private def put(nodeEx: RBNode[K, V], key: K, value: V): RBNode[K, V] = {
     var node: RBNode[K,V] = nodeEx
     if (node == null) return new RBNode(key, value, RED, 1)
-    val cmp: Int  = key.compareTo(node.key);
+    val cmp: Int  = compare(key, node.key)
 
     if(cmp < 0){
       node.left  = put(node.left,  key, value)
