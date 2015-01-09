@@ -4,9 +4,9 @@ import java.util.{Dictionary, UUID}
 import Common.{Evaluator, Operator, Operators}
 import Common.Operators._
 import DAL._
-import Models.{DataEntity, DataEntityItem}
+import Models._
 import RedBlackTree.{RBNode, RBTree}
-import Scaners.{BaseColumn, BaseColumnTree, ColumnTree}
+import Scaners.{MemoryScaner, BaseColumn, ColumnTree}
 
 import scala.collection.mutable
 
@@ -158,14 +158,6 @@ object Main extends App with Evaluator {
 //  val result = cassAnalyser.asInstanceOf[CassandraAnalyzer].execQuery(cassParams.asInstanceOf[List[Object]], cassInsertStr)
 //  println(result)
 
-  (1,5)
-  (2,1)
-  (3,4)
-  (4,3)
-  (6,2)
-  (8,2)
-  (9,1)
-
   val employees = List((1, "Hanry", 3456),
          (2, "George", 3454),
          (3, "Allen", 5678),
@@ -196,13 +188,9 @@ object Main extends App with Evaluator {
                                             "departments.deptNumber" -> new DataEntityItem("deptNumber", 6, "", true, "Integer", 0, 0, 0))
 
   //1 Inner Join, 2 Left Join, 3 Right Join, 4 Cross Join
-  case class Join( Index: Int, JoinType: Int, LeftEntity: String, RightEntity: String, Expression: String)
+
   val joins = List[Join](new Join(1, 1, "employees", "departments", "0."))
-
-  case class JoinCondition(JoinIndex: Int, ConditionIndex: Int, LeftOperand: String, RightOperand: String, Operator: Operators)
   val joinConditions = List[JoinCondition](new JoinCondition(1, 0, "employees.deptNumber", "departments.deptNumber", Operators.optIsEqual))
-
-  case class Condition( leftOperandIndex: Int, rightOperandIndex: Int, operator: Operator)
 
   val c1: ColumnTree[Int, Int] = new RBTree[Int, Int]()
   val c2: ColumnTree[Int, String] = new RBTree[Int, String]()
@@ -226,8 +214,9 @@ object Main extends App with Evaluator {
     c6.put(index, d._3.asInstanceOf[Int])
   }
 
-  val columnsMap = Map[Int, Any](1 -> c1, 2 -> c2, 3 -> c3, 4 -> c4, 5 -> c5, 6 -> c6)
+  //val columnsMap = Map[Int, Any](1 -> c1, 2 -> c2, 3 -> c3, 4 -> c4, 5 -> c5, 6 -> c6)
 
+  /*
   def getOperandIndex(operand: String): Int = {
     return columns(operand).OrderIndex
   }
@@ -236,7 +225,7 @@ object Main extends App with Evaluator {
     return indexers(entityName)
   }
 
-  def SetExpressionConditions(l: Int, r: Int, bcndtns: Array[Boolean], conditions: Array[Condition]): Array[Boolean] = {
+  def SetExpressionConditions(l: Int, r: Int, bcndtns: Array[Boolean], conditions: Array[EvaluatedCondition]): Array[Boolean] = {
     if (bcndtns.length < conditions.length) {
       val c = conditions(bcndtns.length)
       val lc = columnsMap(c.leftOperandIndex)
@@ -257,7 +246,7 @@ object Main extends App with Evaluator {
   for(join <- joins){
     val joinIndex = join.Index
     val jc =  joinConditions.filter(j => j.JoinIndex.equals(joinIndex))
-    val conditions = for(c <- jc) yield new Condition(getOperandIndex(c.LeftOperand), getOperandIndex(c.RightOperand), new Operator(Operators.optIsEqual))
+    val conditions = for(c <- jc) yield new EvaluatedCondition(getOperandIndex(c.LeftOperand), getOperandIndex(c.RightOperand), new Operator(Operators.optIsEqual))
     val leftIndexer = getIndexer(join.LeftEntity)
     val rightIndexer = getIndexer(join.RightEntity)
     val parser = new Parser(join.Expression)
@@ -269,7 +258,7 @@ object Main extends App with Evaluator {
         if(parser.ExecuteExpression(ba)) {
           //Go delete that key from the index tree
 
-          println(c1.get(l), c2.get(l), c3.get(l), c4.get(r), c5.get(r), c6.get(r))
+          //println(c1.get(l), c2.get(l), c3.get(l), c4.get(r), c5.get(r), c6.get(r))
         }
       }
     }
@@ -278,7 +267,7 @@ object Main extends App with Evaluator {
 
     //val boolArray = new Array[Boolean](jc.length)
   }
-
+  */
 
 //  def Scan[T](s1: List[Field[Option[T]]], s2: List[Field[Option[T]]]) : Unit  = {
 //    //var result = Map[Int, Int]
@@ -342,6 +331,13 @@ SELECT A.*, B.C2, C.C2
   T[G] WHERE G is T
    Childs[G]
 */
+
+//  var scaner = new MemoryScaner(List[Map[String, String]](Map("file.url" -> "employees.csv", "file.has.header" -> "true", "file.delimiter" -> ","),
+//    Map("file.url" -> "departments.csv", "file.has.header" -> "true", "file.delimiter" -> ",")))
+  var scaner = new MemoryScaner(List[Map[String, String]](Map("file.url" -> "table_one.csv", "file.has.header" -> "true", "file.delimiter" -> ","),
+    Map("file.url" -> "table_two.csv", "file.has.header" -> "true", "file.delimiter" -> ",")))
+  scaner.scan()
+
 }
 
 //A,B, C, D

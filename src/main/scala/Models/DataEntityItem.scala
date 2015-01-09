@@ -5,10 +5,10 @@ package Models
  */
 case class DataEntityItem (
   ColumnName: String,
-  OrderIndex: Integer,
+  OrderIndex: Int,
   DefaultValue: String,
   IsNullable: Boolean,
   ColumnType: String,
-  ColumnLenght: Integer,
-  ColumnPrecision: Integer,
-  ColumnScale: Integer)
+  ColumnLenght: Int,
+  ColumnPrecision: Int,
+  ColumnScale: Int)

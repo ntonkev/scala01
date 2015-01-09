@@ -1,6 +1,7 @@
 package DAL
 
 import Models.{DataEntityItem, DataEntity}
+import scala.collection.mutable
 import scala.collection.parallel.immutable._
 import scala.slick.driver.JdbcDriver.backend.Database
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
@@ -69,6 +70,33 @@ class FlatFileAnalyzer(connStrSettings: Map[String, String]) extends BaseAnalyze
       columns(n) = new DataEntityItem(headers(n), n + 1, "", true, GetDataType(dataLine(n)), 0, 0, 0)
     }
     return columns.toSeq
+  }
+
+  def getData(entityName: String, columns: Seq[DataEntityItem]): Seq[Map[String, Any]] = {
+    var result = new Array[Map[String, Any]](0)
+    val lines = scala.io.Source.fromFile(fpath + furl).getLines().toArray[String]
+    for(n <- 1 to lines.length - 1){
+      val data = lines(n).split(ffdelimiter)
+      val map = collection.mutable.Map.empty[String, Any]
+      for(m <- 0 to data.length - 1){
+        val column = columns(m)
+        val value: Any = if(!data(m).equals("null")){
+          column.ColumnType match {
+            case "Integer" => data(m).toInt
+            case "String" => data(m)
+            case _ => data(m)
+          }
+        }else {
+          null
+        }
+        val fieldName = entityName + "." + column.ColumnName
+        map += fieldName -> value
+      }
+      result = result :+ map.toMap[String, Any]
+
+    }
+
+    return result.toSeq
   }
 
   def createEntity(sqlStr: String): Boolean = {
