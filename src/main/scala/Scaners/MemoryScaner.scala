@@ -1,5 +1,7 @@
 package Scaners
 
+import java.util.Calendar
+
 import Common.{Operator, Operators}
 import DAL.{FlatFileAnalyzer, DataSrcType, BaseAnalyzer}
 import FilterParser.Parser
@@ -36,6 +38,7 @@ class MemoryScaner {
 
  def this(connectionStrings: List[Map[String, String]]) {
   this
+  val st = Calendar.getInstance().getTime()
   for(m <- connectionStrings){
    val analyzer = BaseAnalyzer(DataSrcType.dstFlatFile, m)
    val entities = analyzer.getEntities()
@@ -63,6 +66,8 @@ class MemoryScaner {
    initializeColumnsData(entityName, data)
 
   }
+  val ft = Calendar.getInstance().getTime()
+  println("Init and columns population time: ", ft.getTime - st.getTime)
  }
 
  def getOperandIndex(operand: String): Int = {
@@ -92,6 +97,7 @@ def getIndexer(entityName: String): Array[Int] = {
 
 
 def scan() = {
+ val st = Calendar.getInstance().getTime()
  for(join <- joins){
   //var counter = 1
 //  var map = collection.mutable.Map.empty[String, Tuple2[Int, Int]]
@@ -112,7 +118,7 @@ def scan() = {
     if(parser.ExecuteExpression(ba)) {
 //     if(map.contains(l.toString() + "_" + r.toString())){
 //         map += l.toString + "_" + r.toString -> new Tuple2(l, r)
-         println(l, r)
+         //println(l, r)
 //     }
      //println(counter, l, r)
      //counter += 1
@@ -127,6 +133,8 @@ def scan() = {
   //val boolArray = new Array[Boolean](jc.length)
  }
 
+ val ft = Calendar.getInstance().getTime()
+ println("Qry exec time: ", ft.getTime - st.getTime)
 }
 
  // var datasources: Map[String, DataEntity] = null
