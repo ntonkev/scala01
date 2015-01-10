@@ -58,11 +58,11 @@ class Operator(operatorType: Operators) extends Function2[Any, Any, Boolean]{
   val optrType = operatorType
   def IsEqual(lo: Any, ro: Any): Boolean = {
     if(lo != null && ro != null){
-      lo.equals(ro)
+      return lo == ro
     }
     else
     {
-      false
+      return false
     }
   }
 

@@ -93,6 +93,8 @@ def getIndexer(entityName: String): Array[Int] = {
 
 def scan() = {
  for(join <- joins){
+  //var counter = 1
+//  var map = collection.mutable.Map.empty[String, Tuple2[Int, Int]]
   val joinIndex = join.Index
   val jc =  joinConditions.filter(j => j.JoinIndex.equals(joinIndex))
   val conditions = for(c <- jc) yield new EvaluatedCondition(c.LeftOperand, c.RightOperand, new Operator(Operators.optIsEqual))
@@ -101,14 +103,19 @@ def scan() = {
   val parser = new Parser(join.Expression)
   //var ba = new Seq[Boolean]
 
-  for(n <- 0 to leftIndexer.length - 1) {
-   val l = leftIndexer(n)
-   for(m <- 0 to rightIndexer.length - 1) {
-    val r = rightIndexer(m)
+  for(l <- leftIndexer) {
+   for(r <- rightIndexer) {
+    //val l = leftIndexer(n)
+    //val r = rightIndexer(m)
     val ba = SetExpressionConditions(l, r, new Array[Boolean](0), conditions.toArray)
     //println(ba(0))
     if(parser.ExecuteExpression(ba)) {
-     println(l, r)
+//     if(map.contains(l.toString() + "_" + r.toString())){
+//         map += l.toString + "_" + r.toString -> new Tuple2(l, r)
+         println(l, r)
+//     }
+     //println(counter, l, r)
+     //counter += 1
      //Go delete that key from the index tree
      //println(c1.get(l), c2.get(l), c3.get(l), c4.get(r), c5.get(r), c6.get(r))
     }

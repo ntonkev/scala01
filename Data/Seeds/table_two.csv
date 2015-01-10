@@ -560,7 +560,7 @@ id,full_name,country,city,gender
 559,Matthew Howard,Vietnam,Trần Văn Thời,M
 560,Robin Kennedy,Canada,Smoky Lake,F
 561,Alice Wagner,Armenia,Bambakashat,F
-562,Antonio Woods,Djibouti,'Ali Sabieh,M
+562,Antonio Woods,Djibouti,Ali Sabieh,M
 563,Christine Ortiz,Indonesia,Camplong,F
 564,Russell Reyes,Albania,Fushë-Bulqizë,M
 565,Kenneth Wilson,Russia,Kerva,M
@@ -862,7 +862,7 @@ id,full_name,country,city,gender
 861,Jose Dixon,Croatia,Belica,M
 862,Theresa Romero,Costa Rica,San Vicente de Moravia,F
 863,Willie Olson,Brazil,Irati,M
-864,Angela Kelley,Canada,Baie-D'Urfé,F
+864,Angela Kelley,Canada,Baie-DUrfé,F
 865,Juan Rose,Chile,El Monte,M
 866,Todd Wheeler,Tanzania,Uyovu,M
 867,Douglas Taylor,Canada,Laval,M
