@@ -334,8 +334,13 @@ SELECT A.*, B.C2, C.C2
 
 //  var scaner = new MemoryScaner(List[Map[String, String]](Map("file.url" -> "employees.csv", "file.has.header" -> "true", "file.delimiter" -> ","),
 //    Map("file.url" -> "departments.csv", "file.has.header" -> "true", "file.delimiter" -> ",")))
-  var scaner = new MemoryScaner(List[Map[String, String]](Map("file.url" -> "table_one.csv", "file.has.header" -> "true", "file.delimiter" -> ","),
-    Map("file.url" -> "table_two.csv", "file.has.header" -> "true", "file.delimiter" -> ",")))
+  val request = new ScanerRequest(connectionStrings = List[Map[String, String]](Map("file.url" -> "table_one.csv", "file.has.header" -> "true", "file.delimiter" -> ","),
+  Map("file.url" -> "table_two.csv", "file.has.header" -> "true", "file.delimiter" -> ",")),
+  joins = List[Join](new Join(1, 1, "table_one", "table_two", "0.")),
+  joinConditions = List[JoinCondition](new JoinCondition(1, 0, "table_one.country", "table_two.country", Operators.optIsEqual)))
+
+
+  var scaner = new MemoryScaner(request)
   scaner.scan()
 
 }

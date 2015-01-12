@@ -21,8 +21,8 @@ class MemoryScaner {
 // val joins = List[Join](new Join(1, 1, "employees", "departments", "0."))
 // val joinConditions = List[JoinCondition](new JoinCondition(1, 0, "employees.departmentId", "departments.departmentId", Operators.optIsEqual))
 
- val joins = List[Join](new Join(1, 1, "table_one", "table_two", "0."))
- val joinConditions = List[JoinCondition](new JoinCondition(1, 0, "table_one.country", "table_two.country", Operators.optIsEqual))
+ var joins = List.empty[Join] //(new Join(1, 1, "table_one", "table_two", "0."))
+ var joinConditions = List.empty[JoinCondition]//(new JoinCondition(1, 0, "table_one.country", "table_two.country", Operators.optIsEqual))
 
  def initializeColumnsData(entityName: String, data: Seq[Map[String, Any]]) = {
     var counter: Int = 1
@@ -36,10 +36,14 @@ class MemoryScaner {
     }
  }
 
- def this(connectionStrings: List[Map[String, String]]) {
+// def this(connectionStrings: List[Map[String, String]]) {
+def this(request: ScanerRequest) {
   this
+ joins = request.joins
+ joinConditions = request.joinConditions
+
   val st = Calendar.getInstance().getTime()
-  for(m <- connectionStrings){
+  for(m <- request.connectionStrings){
    val analyzer = BaseAnalyzer(DataSrcType.dstFlatFile, m)
    val entities = analyzer.getEntities()
    val entityName = entities(0).Name.replace(".csv", "")
@@ -95,8 +99,18 @@ def getIndexer(entityName: String): Array[Int] = {
   }
  }
 
+ def getMaxIndexer(): Array[Int] = {
+  val lst = indexers.toList sortBy {_._2.length}
+  return lst.last._2
+ }
 
-def scan() = {
+ def getResultTree(): RBTree[Int, Map[String, Int]] = {
+  val biggestIndexer = getMaxIndexer()
+  return null
+ }
+
+
+ def scan() = {
  val st = Calendar.getInstance().getTime()
  for(join <- joins){
   //var counter = 1
@@ -111,19 +125,9 @@ def scan() = {
 
   for(l <- leftIndexer) {
    for(r <- rightIndexer) {
-    //val l = leftIndexer(n)
-    //val r = rightIndexer(m)
     val ba = SetExpressionConditions(l, r, new Array[Boolean](0), conditions.toArray)
-    //println(ba(0))
     if(parser.ExecuteExpression(ba)) {
-//     if(map.contains(l.toString() + "_" + r.toString())){
-//         map += l.toString + "_" + r.toString -> new Tuple2(l, r)
-         //println(l, r)
-//     }
-     //println(counter, l, r)
-     //counter += 1
-     //Go delete that key from the index tree
-     //println(c1.get(l), c2.get(l), c3.get(l), c4.get(r), c5.get(r), c6.get(r))
+     //reasult here
     }
    }
   }
@@ -140,5 +144,35 @@ def scan() = {
  // var datasources: Map[String, DataEntity] = null
 // var indexers: Map[String, Array[Int]] = null
 // var columns: Map[String, DataEntityItem] = null
+
+ /*
+ * A Join B   (1)
+ * A Join C   (2)
+ *
+ * which one has the more data
+ * Table B has the more data
+ * Left Operand became Table B
+ * Create Tree with keys table B indexes and Null Values @
+ * Reasult for J(1) The tree From step @ with values Tuple2
+ * Perform join 2
+ * loop trough result and get != then null values
+ * Get the tupleValue for table A and scan table C
+ * If there is a match extend Tuple2 to Tuple 3
+ * Final reasult scan and get all the keys with value  ==   Tuple3
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * */
+
+
 
 }
